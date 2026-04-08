@@ -27,8 +27,8 @@ export default async function HomePage() {
             <a className="primary-button" href="/api/auth/bnet">
               {user ? "Refresh Battle.net Login" : "Log In With Battle.net"}
             </a>
-            <Link className="secondary-button" href={user ? "/profile" : "#feed"}>
-              {user ? "Open Your Profile" : "Explore The Tavern"}
+            <Link className="secondary-button" href={user ? "/account" : "#feed"}>
+              {user ? "Open Your Account" : "Explore The Tavern"}
             </Link>
           </div>
           <div className="hero-note">
@@ -44,7 +44,7 @@ export default async function HomePage() {
               <strong>{user.displayName || user.battletag || "Unnamed Battler"}</strong>
               <span>{user.battletag || "BattleTag sync pending"}</span>
               <span>BG Rank: {user.bgRank ? user.bgRank.toLocaleString() : "Add your MMR on your profile"}</span>
-              <Link href="/profile">Customize your profile</Link>
+              <Link href="/account">Open your account page</Link>
             </div>
           ) : (
             <div className="identity-card">

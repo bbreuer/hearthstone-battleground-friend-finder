@@ -33,7 +33,7 @@ export async function GET(request) {
     await createSession(userId);
     jar.set("bg_tavern_oauth_state", "", { path: "/", maxAge: 0 });
 
-    return NextResponse.redirect(new URL("/profile", request.url));
+    return NextResponse.redirect(new URL("/account", request.url));
   } catch {
     return NextResponse.redirect(new URL("/?error=oauth_failed", request.url));
   }
