@@ -14,7 +14,7 @@ function toNullableNumber(value) {
 export async function POST(request) {
   const session = await getSession();
   if (!session?.userId) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/", request.url), { status: 303 });
   }
 
   const formData = await request.formData();
@@ -32,5 +32,5 @@ export async function POST(request) {
     bio
   });
 
-  return NextResponse.redirect(new URL("/profile", request.url));
+  return NextResponse.redirect(new URL("/profile", request.url), { status: 303 });
 }

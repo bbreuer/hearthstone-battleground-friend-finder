@@ -17,22 +17,28 @@ function toNullableNumber(value) {
 export async function POST(request) {
   const session = await getSession();
   if (!session?.userId) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/", request.url), { status: 303 });
   }
 
   const formData = await request.formData();
   const file = formData.get("screenshot");
   if (!(file instanceof File) || file.size === 0) {
-    return NextResponse.redirect(new URL("/profile?error=missing_file", request.url));
+    return NextResponse.redirect(new URL("/profile?error=missing_file", request.url), {
+      status: 303
+    });
   }
 
   if (file.size > MAX_SERVER_UPLOAD_SIZE) {
-    return NextResponse.redirect(new URL("/profile?error=file_too_large", request.url));
+    return NextResponse.redirect(new URL("/profile?error=file_too_large", request.url), {
+      status: 303
+    });
   }
 
   const allowedTypes = new Set(["image/png", "image/jpeg", "image/webp"]);
   if (!allowedTypes.has(file.type)) {
-    return NextResponse.redirect(new URL("/profile?error=invalid_file_type", request.url));
+    return NextResponse.redirect(new URL("/profile?error=invalid_file_type", request.url), {
+      status: 303
+    });
   }
 
   const extension = file.name.includes(".") ? file.name.split(".").pop().toLowerCase() : "png";
@@ -50,5 +56,5 @@ export async function POST(request) {
     imagePath: blob.url
   });
 
-  return NextResponse.redirect(new URL("/profile", request.url));
+  return NextResponse.redirect(new URL("/profile", request.url), { status: 303 });
 }
