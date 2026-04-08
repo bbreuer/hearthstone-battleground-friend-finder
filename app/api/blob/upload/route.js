@@ -6,11 +6,6 @@ import { getSession } from "@/lib/session";
 const MAX_UPLOAD_SIZE = 20 * 1024 * 1024;
 
 export async function POST(request) {
-  const session = await getSession();
-  if (!session?.userId) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
-
   const body = await request.json();
 
   try {
@@ -18,6 +13,11 @@ export async function POST(request) {
       body,
       request,
       onBeforeGenerateToken: async (pathname, clientPayload) => {
+        const session = await getSession();
+        if (!session?.userId) {
+          throw new Error("Unauthorized");
+        }
+
         const safePathname = String(pathname || "");
         const payload = clientPayload ? JSON.parse(clientPayload) : {};
         const contentType = String(payload.contentType || "");
