@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, getRecentPostsByUser } from "@/lib/data";
+import UploadForm from "./upload-form";
 
 export default async function ProfilePage() {
   const user = await getCurrentUser();
@@ -99,29 +100,7 @@ export default async function ProfilePage() {
           <p className="eyebrow">Upload A Board</p>
           <h2>Share your latest game screenshot</h2>
         </div>
-        <form action="/api/posts/create" className="stack-form" encType="multipart/form-data" method="post">
-          <label>
-            Caption
-            <input maxLength={120} name="caption" placeholder="Turn 10 Mech scam into first place" />
-          </label>
-          <div className="form-row">
-            <label>
-              Placement
-              <input inputMode="numeric" max="8" min="1" name="placement" />
-            </label>
-            <label>
-              Match MMR
-              <input inputMode="numeric" name="mmr" />
-            </label>
-          </div>
-          <label>
-            Screenshot image
-            <input accept="image/png,image/jpeg,image/webp" name="screenshot" required type="file" />
-          </label>
-          <button className="primary-button" type="submit">
-            Post to the gallery
-          </button>
-        </form>
+        <UploadForm />
       </section>
 
       <section className="frame-panel gallery-panel">

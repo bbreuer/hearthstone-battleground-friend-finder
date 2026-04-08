@@ -496,6 +496,11 @@ textarea {
   resize: vertical;
 }
 
+.form-error {
+  margin: 0;
+  color: #ffbe9f;
+}
+
 .empty-state {
   padding: 1rem 0;
 }
