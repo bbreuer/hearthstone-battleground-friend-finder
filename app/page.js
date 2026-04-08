@@ -14,107 +14,141 @@ export default async function HomePage() {
   const posts = await getRecentPosts();
 
   return (
-    <main className="shell">
-      <section className="hero">
-        <div className="hero-copy">
-          <p className="eyebrow">Hearthstone Battlegrounds Community</p>
-          <h1>Find your next duo queue partner and show off your spiciest boards.</h1>
-          <p className="lede">
-            Battle.net sign-in powers player identity, profile pages keep your BG rank visible,
-            and screenshot uploads make every highroll, scam, and perfect lethal easy to share.
+    <main className="shell shell-spacious">
+      <section className="masthead">
+        <p className="kicker">Hearthstone Battlegrounds Community</p>
+        <h1>Friend Finder Leaderboards</h1>
+        <p className="masthead-copy">
+          Find Battlegrounds players, compare public rank cards, and share your latest boards in a
+          layout inspired by Blizzard&apos;s Hearthstone leaderboard presentation.
+        </p>
+        <div className="tab-strip">
+          <span className="tab active">Friend Finder</span>
+          <span className="tab">Recent Boards</span>
+          <span className="tab">Battle.net Profiles</span>
+        </div>
+      </section>
+
+      <section className="hero-board">
+        <div className="hero-banner frame-panel">
+          <p className="eyebrow">Season Overview</p>
+          <h2>Queue smarter and discover active tavern partners.</h2>
+          <p className="lede parchment-copy">
+            Sign in with Battle.net to create your player card, set your visible BG rank, and upload
+            screenshots from your best lobbies. When you log out, your tavern row disappears from the
+            active list automatically.
           </p>
           <div className="hero-actions">
             <a className="primary-button" href="/api/auth/bnet">
               {user ? "Refresh Battle.net Login" : "Log In With Battle.net"}
             </a>
-            <Link className="secondary-button" href={user ? "/account" : "#feed"}>
-              {user ? "Open Your Account" : "Explore The Tavern"}
+            <Link className="secondary-button" href={user ? "/account" : "#leaderboard"}>
+              {user ? "Open Your Account" : "Browse Players"}
             </Link>
           </div>
-          <div className="hero-note">
-            <span className="chip">BattleTag sync</span>
-            <span className="chip">BG rank on profile</span>
-            <span className="chip">Screenshot sharing</span>
-          </div>
         </div>
-        <div className="hero-panel">
-          <p className="panel-kicker">Member Snapshot</p>
+
+        <aside className="season-sidecard frame-panel">
+          <p className="eyebrow">Your Standing</p>
           {user ? (
-            <div className="identity-card">
+            <div className="season-card">
+              <span className="crest">{(user.displayName || user.battletag || "B").charAt(0).toUpperCase()}</span>
               <strong>{user.displayName || user.battletag || "Unnamed Battler"}</strong>
               <span>{user.battletag || "BattleTag sync pending"}</span>
-              <span>BG Rank: {user.bgRank ? user.bgRank.toLocaleString() : "Add your MMR on your profile"}</span>
-              <Link href="/account">Open your account page</Link>
+              <span className="season-rank">
+                BG Rank {user.bgRank ? user.bgRank.toLocaleString() : "Add your MMR"}
+              </span>
+              <Link href="/account">View member card</Link>
             </div>
           ) : (
-            <div className="identity-card">
-              <strong>Log in to create your card</strong>
-              <span>Your BattleTag comes from Battle.net.</span>
-              <span>Your BG rank lives on your public player profile.</span>
+            <div className="season-card">
+              <span className="crest">?</span>
+              <strong>Create your player card</strong>
+              <span>BattleTag sync comes from Battle.net.</span>
+              <span className="season-rank">Your BG rank appears on your public account page.</span>
               <a href="/api/auth/bnet">Start sign in</a>
             </div>
           )}
-        </div>
+        </aside>
       </section>
 
-      <section className="section-grid">
-        <div className="panel">
-          <div className="section-heading">
+      <section className="leaderboard-layout" id="leaderboard">
+        <div className="frame-panel leaderboard-panel">
+          <div className="section-heading centered-heading">
             <p className="eyebrow">Looking For Group</p>
             <h2>Active Tavern Table</h2>
+            <p className="section-copy">
+              Only players currently logged in appear here, with their profile rank and queue notes.
+            </p>
           </div>
-          <div className="member-list">
-            {members.length ? (
-              members.map((member) => (
-                <article className="member-card" key={member.id}>
-                  <div>
-                    <h3>{member.displayName || member.battletag || "New Battler"}</h3>
-                    <p>{member.battletag || "BattleTag hidden"}</p>
+
+          {members.length ? (
+            <div className="leaderboard-table">
+              <div className="leaderboard-head">
+                <span>Rank</span>
+                <span>Player</span>
+                <span>Favorite Hero</span>
+                <span>Looking For</span>
+              </div>
+              {members.map((member, index) => (
+                <article className="leaderboard-row" key={member.id}>
+                  <span className="rank-cell">#{index + 1}</span>
+                  <div className="player-cell">
+                    <span className="mini-crest">
+                      {(member.displayName || member.battletag || "B").charAt(0).toUpperCase()}
+                    </span>
+                    <div>
+                      <strong>{member.displayName || member.battletag || "New Battler"}</strong>
+                      <p>
+                        {member.battletag || "BattleTag hidden"} • BG Rank{" "}
+                        {member.bgRank ? member.bgRank.toLocaleString() : "Unlisted"}
+                      </p>
+                    </div>
                   </div>
-                  <div className="member-stats">
-                    <span>BG Rank {member.bgRank ? member.bgRank.toLocaleString() : "Unlisted"}</span>
-                    <span>{member.favoriteHero || "Favorite hero not set"}</span>
-                  </div>
+                  <span>{member.favoriteHero || "Not set"}</span>
                   <p>{member.lookingForGroup || "Looking for more friends to queue with."}</p>
                 </article>
-              ))
-            ) : (
-              <p className="empty-state">No adventurers yet. Sign in and become the first profile on the board.</p>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="empty-state wide">No active battlers right now. Sign in to claim the top row.</p>
+          )}
         </div>
 
-        <div className="panel">
+        <div className="frame-panel notes-panel">
           <div className="section-heading">
             <p className="eyebrow">How It Works</p>
-            <h2>Built for a simple MVP</h2>
+            <h2>Built like a public member board</h2>
           </div>
-          <div className="steps">
+          <div className="steps leaderboard-steps">
             <div>
-              <strong>1. Battle.net login</strong>
-              <p>Use Blizzard OAuth to create an account tied to your BattleTag.</p>
+              <strong>Battle.net sign-in</strong>
+              <p>Authenticate once and your BattleTag becomes the identity anchor for your account card.</p>
             </div>
             <div>
-              <strong>2. Set your BG profile</strong>
-              <p>Add your Battlegrounds rank, favorite hero, and what kind of teammates you want.</p>
+              <strong>Set your visible BG rank</strong>
+              <p>Keep your MMR current so the tavern table feels useful for matchmaking.</p>
             </div>
             <div>
-              <strong>3. Share your boards</strong>
-              <p>Upload screenshots from your games so other players can see your playstyle instantly.</p>
+              <strong>Show your boards</strong>
+              <p>Upload screenshots from standout games so other players can see your style at a glance.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="feed-panel" id="feed">
-        <div className="section-heading">
+      <section className="frame-panel gallery-panel" id="feed">
+        <div className="section-heading centered-heading">
           <p className="eyebrow">Board Gallery</p>
           <h2>Recent Battleground posts</h2>
+          <p className="section-copy">
+            A parchment-style community board for highlighted turns, capped lobbies, and favorite comps.
+          </p>
         </div>
-        <div className="feed-grid">
+        <div className="feed-grid leaderboard-gallery">
           {posts.length ? (
             posts.map((post) => (
-              <article className="post-card" key={post.id}>
+              <article className="post-card parchment-card" key={post.id}>
                 <img src={post.image_path} alt={post.caption || "Battleground screenshot"} />
                 <div className="post-copy">
                   <div className="post-header">
@@ -135,7 +169,7 @@ export default async function HomePage() {
             ))
           ) : (
             <div className="empty-state wide">
-              The feed is empty right now. After you log in, your first uploaded screenshot will appear here.
+              The gallery is empty right now. Log in and post your first board to light up the hall.
             </div>
           )}
         </div>

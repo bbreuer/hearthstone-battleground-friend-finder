@@ -11,30 +11,17 @@ export default async function ProfilePage() {
   const posts = await getRecentPostsByUser(user.id);
 
   return (
-    <main className="shell profile-shell">
-      <section className="profile-header panel">
-        <div>
-          <p className="eyebrow">Your Tavern Profile</p>
-          <h1>{user.displayName || user.battletag || "Battlegrounds player"}</h1>
-          <p className="lede compact">
-            Your BattleTag is synced from Battle.net. Your Battlegrounds rank and friend-finder details
-            are editable below so your page stays useful even when Blizzard does not expose every stat in OAuth.
-          </p>
-        </div>
-        <div className="header-actions">
-          <Link className="secondary-button" href="/">
-            Back To Home
-          </Link>
-          <form action="/api/auth/logout" method="post">
-            <button className="ghost-button" type="submit">
-              Log out
-            </button>
-          </form>
-        </div>
+    <main className="shell shell-spacious">
+      <section className="masthead compact-masthead">
+        <p className="kicker">Profile Editor</p>
+        <h1>{user.displayName || user.battletag || "Battlegrounds player"}</h1>
+        <p className="masthead-copy">
+          Update your friend-finder details, BG rank, and screenshot gallery from one management page.
+        </p>
       </section>
 
       <section className="profile-grid">
-        <div className="panel">
+        <div className="frame-panel">
           <div className="section-heading">
             <p className="eyebrow">Identity</p>
             <h2>Battle.net linked account</h2>
@@ -57,9 +44,19 @@ export default async function ProfilePage() {
               <strong>{user.bgRank ? user.bgRank.toLocaleString() : "Add your MMR below"}</strong>
             </div>
           </div>
+          <div className="hero-actions">
+            <Link className="secondary-button" href="/account">
+              Back To Account
+            </Link>
+            <form action="/api/auth/logout" method="post">
+              <button className="ghost-button" type="submit">
+                Log out
+              </button>
+            </form>
+          </div>
         </div>
 
-        <div className="panel">
+        <div className="frame-panel">
           <div className="section-heading">
             <p className="eyebrow">Edit Profile</p>
             <h2>Friend-finder details</h2>
@@ -97,7 +94,7 @@ export default async function ProfilePage() {
         </div>
       </section>
 
-      <section className="panel upload-panel">
+      <section className="frame-panel upload-panel">
         <div className="section-heading">
           <p className="eyebrow">Upload A Board</p>
           <h2>Share your latest game screenshot</h2>
@@ -127,15 +124,15 @@ export default async function ProfilePage() {
         </form>
       </section>
 
-      <section className="panel">
-        <div className="section-heading">
+      <section className="frame-panel gallery-panel">
+        <div className="section-heading centered-heading">
           <p className="eyebrow">Your Gallery</p>
           <h2>Recent uploads</h2>
         </div>
-        <div className="feed-grid">
+        <div className="feed-grid leaderboard-gallery">
           {posts.length ? (
             posts.map((post) => (
-              <article className="post-card" key={post.id}>
+              <article className="post-card parchment-card" key={post.id}>
                 <img src={post.image_path} alt={post.caption || "Battleground screenshot"} />
                 <div className="post-copy">
                   <strong>{post.caption || "Untitled screenshot"}</strong>

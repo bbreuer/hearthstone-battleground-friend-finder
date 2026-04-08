@@ -16,34 +16,18 @@ export default async function AccountPage() {
   const posts = await getRecentPostsByUser(user.id, 3);
 
   return (
-    <main className="shell profile-shell">
-      <section className="account-hero panel">
-        <div className="account-summary">
-          <div className="avatar-badge" aria-hidden="true">
-            {getAvatarLetter(user)}
-          </div>
-          <div>
-            <p className="eyebrow">Account Created</p>
-            <h1>{user.displayName || user.battletag || "New Battler"}</h1>
-            <p className="lede compact">
-              Your Battle.net account is connected. This is your member card for the website, and it is
-              where other Battlegrounds players can spot your name and rank.
-            </p>
-          </div>
-        </div>
-
-        <div className="account-actions">
-          <Link className="secondary-button" href="/">
-            Back To Home
-          </Link>
-          <Link className="primary-button" href="/profile">
-            Edit Full Profile
-          </Link>
-        </div>
+    <main className="shell shell-spacious">
+      <section className="masthead compact-masthead">
+        <p className="kicker">Battle.net Member Card</p>
+        <h1>{user.displayName || user.battletag || "New Battler"}</h1>
+        <p className="masthead-copy">
+          Your website account is live. This page mirrors the official Hearthstone leaderboard feel
+          while giving your Battlegrounds profile its own public identity.
+        </p>
       </section>
 
       <section className="account-grid">
-        <article className="panel account-card">
+        <article className="frame-panel account-card">
           <p className="eyebrow">Player Card</p>
           <div className="account-card-top">
             <div className="avatar-badge large" aria-hidden="true">
@@ -68,37 +52,45 @@ export default async function AccountPage() {
               <strong>{user.favoriteHero || "Choose one"}</strong>
             </div>
           </div>
+          <div className="hero-actions">
+            <Link className="secondary-button" href="/">
+              Back To Home
+            </Link>
+            <Link className="primary-button" href="/profile">
+              Edit Full Profile
+            </Link>
+          </div>
         </article>
 
-        <article className="panel account-card">
-          <p className="eyebrow">Next Steps</p>
-          <h2>Finish your battler profile</h2>
-          <div className="steps">
+        <article className="frame-panel account-card">
+          <p className="eyebrow">Status Board</p>
+          <h2>What your account already shows</h2>
+          <div className="steps leaderboard-steps">
             <div>
-              <strong>Add your BG rank</strong>
-              <p>Keep your MMR updated so other players know your current level.</p>
+              <strong>Battle.net identity</strong>
+              <p>Your BattleTag is now linked to this account and used across the site.</p>
             </div>
             <div>
-              <strong>Upload screenshots</strong>
-              <p>Share top boards, scam wins, and favorite comps from your recent games.</p>
+              <strong>Visible battler crest</strong>
+              <p>Your member icon is generated from your name so your row stands out in the table.</p>
             </div>
             <div>
-              <strong>Find friends faster</strong>
-              <p>Set your hero preference and what kind of teammates you are looking for.</p>
+              <strong>Rank-ready profile</strong>
+              <p>Set or update your BG rank anytime from the full profile editor.</p>
             </div>
           </div>
         </article>
       </section>
 
-      <section className="panel">
-        <div className="section-heading">
+      <section className="frame-panel gallery-panel">
+        <div className="section-heading centered-heading">
           <p className="eyebrow">Recent Boards</p>
           <h2>Your newest uploads</h2>
         </div>
-        <div className="feed-grid">
+        <div className="feed-grid leaderboard-gallery">
           {posts.length ? (
             posts.map((post) => (
-              <article className="post-card" key={post.id}>
+              <article className="post-card parchment-card" key={post.id}>
                 <img src={post.image_path} alt={post.caption || "Battleground screenshot"} />
                 <div className="post-copy">
                   <strong>{post.caption || "Untitled screenshot"}</strong>
@@ -108,7 +100,7 @@ export default async function AccountPage() {
             ))
           ) : (
             <p className="empty-state wide">
-              Your account is live. Head to your full profile to add rank details and upload your first board.
+              Your account is ready. Head to the full profile page to add rank details and upload your first board.
             </p>
           )}
         </div>
