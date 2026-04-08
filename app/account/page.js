@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, getRecentPostsByUser } from "@/lib/data";
+import { getGalleryImageSrc } from "@/lib/blob";
 
 function getAvatarLetter(user) {
   const source = user.displayName || user.battletag || "B";
@@ -91,7 +92,12 @@ export default async function AccountPage() {
           {posts.length ? (
             posts.map((post) => (
               <article className="post-card parchment-card" key={post.id}>
-                <img src={post.image_path} alt={post.caption || "Battleground screenshot"} />
+                {getGalleryImageSrc(post.image_path) ? (
+                  <img
+                    src={getGalleryImageSrc(post.image_path)}
+                    alt={post.caption || "Battleground screenshot"}
+                  />
+                ) : null}
                 <div className="post-copy">
                   <strong>{post.caption || "Untitled screenshot"}</strong>
                   <p>Placement {post.placement || "-"} | Match MMR {post.mmr || "-"}</p>

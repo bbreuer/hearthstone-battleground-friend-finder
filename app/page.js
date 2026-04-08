@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getGalleryImageSrc } from "@/lib/blob";
 import { getCommunityMembers, getCurrentUser, getRecentPosts } from "@/lib/data";
 
 function formatDate(date) {
@@ -149,7 +150,12 @@ export default async function HomePage() {
           {posts.length ? (
             posts.map((post) => (
               <article className="post-card parchment-card" key={post.id}>
-                <img src={post.image_path} alt={post.caption || "Battleground screenshot"} />
+                {getGalleryImageSrc(post.image_path) ? (
+                  <img
+                    src={getGalleryImageSrc(post.image_path)}
+                    alt={post.caption || "Battleground screenshot"}
+                  />
+                ) : null}
                 <div className="post-copy">
                   <div className="post-header">
                     <div>

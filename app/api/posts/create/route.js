@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { createPostForUser } from "@/lib/data";
 import { getSession } from "@/lib/session";
 
+const MAX_SERVER_UPLOAD_SIZE = 4_500_000;
+
 function toNullableNumber(value) {
   if (!value) {
     return null;
@@ -24,6 +26,10 @@ export async function POST(request) {
     return NextResponse.redirect(new URL("/profile?error=missing_file", request.url));
   }
 
+  if (file.size > MAX_SERVER_UPLOAD_SIZE) {
+    return NextResponse.redirect(new URL("/profile?error=file_too_large", request.url));
+  }
+
   const allowedTypes = new Set(["image/png", "image/jpeg", "image/webp"]);
   if (!allowedTypes.has(file.type)) {
     return NextResponse.redirect(new URL("/profile?error=invalid_file_type", request.url));
@@ -32,7 +38,7 @@ export async function POST(request) {
   const extension = file.name.includes(".") ? file.name.split(".").pop().toLowerCase() : "png";
   const safeExtension = ["png", "jpg", "jpeg", "webp"].includes(extension) ? extension : "png";
   const blob = await put(`boards/${session.userId}/${Date.now()}.${safeExtension}`, file, {
-    access: "public",
+    access: "private",
     addRandomSuffix: true,
     contentType: file.type
   });
