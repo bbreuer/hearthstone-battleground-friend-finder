@@ -162,6 +162,10 @@ textarea {
   align-items: center;
 }
 
+.inline-form {
+  display: inline-flex;
+}
+
 .button-row.compact {
   justify-content: flex-end;
 }
@@ -240,6 +244,11 @@ textarea {
 .ghost-button:hover,
 .action-link:hover {
   transform: translateY(-1px);
+}
+
+.danger-button {
+  color: #ffd4d4;
+  border-color: rgba(255, 120, 120, 0.22);
 }
 
 .section-stack {

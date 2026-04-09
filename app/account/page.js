@@ -89,7 +89,7 @@ export default async function AccountPage() {
         <div className="section-header">
           <div>
             <p className="page-label">Recent Boards</p>
-          <h2>Your newest uploads</h2>
+            <h2>Your newest uploads</h2>
           </div>
           <Link className="secondary-button" href="/profile">
             Open Upload Manager
@@ -108,6 +108,13 @@ export default async function AccountPage() {
                 <div className="gallery-copy">
                   <strong>{post.caption || "Untitled screenshot"}</strong>
                   <p>Placement {post.placement || "-"} | Match MMR {post.mmr || "-"}</p>
+                  <form action="/api/posts/delete" className="inline-form" method="post">
+                    <input name="postId" type="hidden" value={post.id} />
+                    <input name="returnTo" type="hidden" value="/account" />
+                    <button className="ghost-button danger-button" type="submit">
+                      Delete post
+                    </button>
+                  </form>
                 </div>
               </article>
             ))
