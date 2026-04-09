@@ -7,61 +7,69 @@ import UploadForm from "./upload-form";
 export default async function ProfilePage() {
   const user = await getCurrentUser();
   if (!user) {
-    redirect("/");
+    redirect("/signed-out");
   }
 
   const posts = await getRecentPostsByUser(user.id);
 
   return (
-    <main className="shell shell-spacious">
-      <section className="masthead compact-masthead">
-        <p className="kicker">Profile Editor</p>
-        <h1>{user.displayName || user.battletag || "Battlegrounds player"}</h1>
-        <p className="masthead-copy">
-          Update your friend-finder details, BG rank, and screenshot gallery from one management page.
-        </p>
+    <main className="app-shell app-shell-spacious">
+      <section className="topbar">
+        <div>
+          <p className="page-label">Profile Editor</p>
+          <h1 className="page-title">{user.displayName || user.battletag || "Battlegrounds player"}</h1>
+        </div>
+        <div className="button-row compact">
+          <Link className="secondary-button" href="/hub">
+            Back To Hub
+          </Link>
+          <form action="/api/auth/logout" method="post">
+            <button className="ghost-button" type="submit">
+              Log out
+            </button>
+          </form>
+        </div>
       </section>
 
-      <section className="profile-grid">
-        <div className="frame-panel">
-          <div className="section-heading">
-            <p className="eyebrow">Identity</p>
-            <h2>Battle.net linked account</h2>
+      <section className="content-grid">
+        <div className="glass-panel">
+          <div className="section-header">
+            <div>
+              <p className="page-label">Identity</p>
+              <h2>Battle.net linked account</h2>
+            </div>
           </div>
-          <div className="identity-stack">
-            <div className="stat-row">
+          <div className="stack-list">
+            <div className="stack-item">
               <span>BattleTag</span>
               <strong>{user.battletag || "Unavailable from Blizzard"}</strong>
             </div>
-            <div className="stat-row">
+            <div className="stack-item">
               <span>Profile name</span>
               <strong>{user.displayName || "Not set"}</strong>
             </div>
-            <div className="stat-row">
+            <div className="stack-item">
               <span>Region</span>
               <strong>{user.region.toUpperCase()}</strong>
             </div>
-            <div className="stat-row">
+            <div className="stack-item">
               <span>Current BG rank</span>
               <strong>{user.bgRank ? user.bgRank.toLocaleString() : "Add your MMR below"}</strong>
             </div>
           </div>
-          <div className="hero-actions">
+          <div className="button-row compact">
             <Link className="secondary-button" href="/account">
               Back To Account
             </Link>
-            <form action="/api/auth/logout" method="post">
-              <button className="ghost-button" type="submit">
-                Log out
-              </button>
-            </form>
           </div>
         </div>
 
-        <div className="frame-panel">
-          <div className="section-heading">
-            <p className="eyebrow">Edit Profile</p>
-            <h2>Friend-finder details</h2>
+        <div className="glass-panel">
+          <div className="section-header">
+            <div>
+              <p className="page-label">Edit Profile</p>
+              <h2>Friend-finder details</h2>
+            </div>
           </div>
           <form action="/api/profile/update" method="post" className="stack-form">
             <label>
@@ -96,30 +104,36 @@ export default async function ProfilePage() {
         </div>
       </section>
 
-      <section className="frame-panel upload-panel">
-        <div className="section-heading">
-          <p className="eyebrow">Upload A Board</p>
-          <h2>Share your latest game screenshot</h2>
+      <section className="section-stack">
+        <div className="glass-panel">
+          <div className="section-header">
+            <div>
+              <p className="page-label">Upload A Board</p>
+              <h2>Share your latest game screenshot</h2>
+            </div>
+          </div>
+          <UploadForm />
         </div>
-        <UploadForm />
       </section>
 
-      <section className="frame-panel gallery-panel">
-        <div className="section-heading centered-heading">
-          <p className="eyebrow">Your Gallery</p>
-          <h2>Recent uploads</h2>
+      <section className="section-stack">
+        <div className="section-header">
+          <div>
+            <p className="page-label">Your Gallery</p>
+            <h2>Recent uploads</h2>
+          </div>
         </div>
-        <div className="feed-grid leaderboard-gallery">
+        <div className="gallery-grid">
           {posts.length ? (
             posts.map((post) => (
-              <article className="post-card parchment-card" key={post.id}>
+              <article className="gallery-card" key={post.id}>
                 {getGalleryImageSrc(post.image_path) ? (
                   <img
                     src={getGalleryImageSrc(post.image_path)}
                     alt={post.caption || "Battleground screenshot"}
                   />
                 ) : null}
-                <div className="post-copy">
+                <div className="gallery-copy">
                   <strong>{post.caption || "Untitled screenshot"}</strong>
                   <p>Placement {post.placement || "-"} | Match MMR {post.mmr || "-"}</p>
                 </div>

@@ -10,5 +10,5 @@ export async function POST(request) {
   }
 
   await destroySession();
-  return NextResponse.redirect(new URL("/", request.url), { status: 303 });
+  return NextResponse.redirect(new URL("/signed-out", request.url), { status: 303 });
 }
