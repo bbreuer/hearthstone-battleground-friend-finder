@@ -24,6 +24,9 @@ export default async function AccountPage() {
           <h1 className="page-title">{user.displayName || user.battletag || "New Battler"}</h1>
         </div>
         <div className="button-row compact">
+          <Link className="secondary-button" href="/inbox">
+            Inbox
+          </Link>
           <Link className="secondary-button" href="/hub">
             Back To Hub
           </Link>

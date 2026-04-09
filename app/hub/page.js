@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getGalleryImageSrc } from "@/lib/blob";
-import { getCommunityMembers, getCurrentUser, getRecentPosts } from "@/lib/data";
+import {
+  getCommunityMembers,
+  getCurrentUser,
+  getMemberMessagingState,
+  getPendingInviteCount,
+  getRecentPosts
+} from "@/lib/data";
 
 function formatDate(date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -18,6 +24,11 @@ export default async function HubPage() {
 
   const members = await getCommunityMembers(8);
   const posts = await getRecentPosts(9);
+  const inviteCount = await getPendingInviteCount(user.id);
+  const memberState = await getMemberMessagingState(
+    user.id,
+    members.filter((member) => member.id !== user.id).map((member) => member.id)
+  );
 
   return (
     <main className="app-shell app-shell-spacious">
@@ -27,6 +38,9 @@ export default async function HubPage() {
           <h1 className="page-title">Welcome back, {user.displayName || user.battletag || "Battler"}.</h1>
         </div>
         <div className="button-row compact">
+          <Link className="secondary-button" href="/inbox">
+            Inbox{inviteCount ? ` (${inviteCount})` : ""}
+          </Link>
           <Link className="secondary-button" href="/account">
             Account
           </Link>
@@ -72,6 +86,9 @@ export default async function HubPage() {
         <article className="glass-panel spotlight-card">
           <p className="panel-kicker">Quick Actions</p>
           <div className="action-list">
+            <Link className="action-link" href="/inbox">
+              Review message invites and active chats
+            </Link>
             <Link className="action-link" href="/profile">
               Update rank, bio, and queue preferences
             </Link>
@@ -109,6 +126,31 @@ export default async function HubPage() {
                   <p className="player-note">
                     {member.lookingForGroup || "Looking for more Battlegrounds friends to queue with."}
                   </p>
+                  {member.id !== user.id ? (
+                    <div className="player-actions">
+                      {memberState[member.id]?.conversationId ? (
+                        <Link className="secondary-button" href={`/messages/${memberState[member.id].conversationId}`}>
+                          Open chat
+                        </Link>
+                      ) : memberState[member.id]?.inviteDirection === "outgoing" ? (
+                        <span className="status-pill">Invite sent</span>
+                      ) : memberState[member.id]?.inviteDirection === "incoming" ? (
+                        <Link className="secondary-button" href="/inbox">
+                          Respond in inbox
+                        </Link>
+                      ) : (
+                        <form action="/api/messages/invite" className="inline-form" method="post">
+                          <input name="receiverId" type="hidden" value={member.id} />
+                          <input name="returnTo" type="hidden" value="/hub" />
+                          <button className="secondary-button" type="submit">
+                            Invite to message
+                          </button>
+                        </form>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="status-pill">You</span>
+                  )}
                 </article>
               ))
             ) : (
