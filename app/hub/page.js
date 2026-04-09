@@ -10,10 +10,15 @@ import {
 } from "@/lib/data";
 
 function formatDate(date) {
+  const parsedDate = new Date(date);
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "Recently";
+  }
+
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric"
-  }).format(new Date(date));
+  }).format(parsedDate);
 }
 
 export default async function HubPage() {

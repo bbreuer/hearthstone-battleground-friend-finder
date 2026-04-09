@@ -3,12 +3,17 @@ import { redirect } from "next/navigation";
 import { getConversationForUser, getCurrentUser } from "@/lib/data";
 
 function formatDateTime(date) {
+  const parsedDate = new Date(date);
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "Recently";
+  }
+
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     hour: "numeric",
     minute: "2-digit"
-  }).format(new Date(date));
+  }).format(parsedDate);
 }
 
 export default async function MessageThreadPage({ params }) {
@@ -17,7 +22,7 @@ export default async function MessageThreadPage({ params }) {
     redirect("/signed-out");
   }
 
-  const conversationId = Number((await params).id);
+  const conversationId = Number(params?.id);
   if (!Number.isFinite(conversationId)) {
     redirect("/inbox");
   }
