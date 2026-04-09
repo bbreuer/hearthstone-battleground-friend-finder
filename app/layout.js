@@ -8,7 +8,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <div className="dotted-glow-bg" aria-hidden="true">
+          <div className="dotted-glow-orb dotted-glow-orb-a" />
+          <div className="dotted-glow-orb dotted-glow-orb-b" />
+          <div className="dotted-glow-orb dotted-glow-orb-c" />
+        </div>
+        <div className="site-frame">{children}</div>
+      </body>
     </html>
   );
 }
